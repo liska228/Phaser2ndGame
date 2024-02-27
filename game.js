@@ -1,7 +1,7 @@
 var config = {
     type: Phaser.AUTO,
     width: 1920,
-    height: 900,
+    height: 1080,
     physics: {
         default: 'arcade',
         arcade: {
@@ -60,15 +60,18 @@ function create() {
     platforms.create(2600, 550, 'ground1').setScale(2).refreshBody();
 
     // Додавання зображення house на першу платформу
-    this.add.image(100, 750, 'house');
+    this.add.image(100, 900, 'house');
 
     // Створення гравця
     player = this.physics.add.sprite(100, 450, 'dude');
     player.setBounce(0.2);
     player.setCollideWorldBounds(false); // Вимкнення обмежень за межами світу гри
+
     // Колізія гравця з платформами
     this.physics.add.collider(player, platforms);
     cursors = this.input.keyboard.createCursorKeys();
+
+
     // Налаштування анімацій гравця
     this.anims.create({
         key: 'left',
