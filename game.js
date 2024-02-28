@@ -31,9 +31,20 @@ var canMove = true; // Змінна, що визначає, чи може гра
 //     game.scale.resize(window.innerWidth, window.innerHeight);
 // });
 
+function create_platforms(n, type){
+    for(var i = 0;i<n;i++){
+        if(type == 1){
+            platforms.create(Math.floor(Math.random() * 5000), Math.floor(Math.random() * 1000), 'ground1').setScale(2).refreshBody();
+        }
+        else{
+            platforms.create(Math.floor(Math.random() * 5000), Math.floor(Math.random() * 1000), 'ground').setScale(2).refreshBody();
+        }
+    }
+}
+
 // Завантаження ресурсів
 function preload() {
-    this.load.image('background', 'assets/background.jpg'); // Завантаження зображення неба
+    this.load.image('background', 'assets/background.png'); // Завантаження зображення неба
     this.load.image('ground', 'assets/platform.png'); // Завантаження зображення платформи
     this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 85, frameHeight: 75 }); // Завантаження спрайту гравця
     this.load.image('house', 'assets/house.png'); // Завантаження зображення будинка
@@ -47,21 +58,25 @@ const WORLD_WIDTH = 5000; // Змінено ширину світу для ві�
 /// Створення гри
 function create() {
     // Додавання зображення неба і встановлення розміру на весь екран
-    this.add.image(500, 500, 'background').setDisplaySize(WORLD_WIDTH, 1000);
+    this.add.image(500, 500, 'background').setDisplaySize(WORLD_WIDTH, 1080);
 
     // Створення платформ
     platforms = this.physics.add.staticGroup();
 
     // Розташовуємо першу платформу з самого низу екрану
-    platforms.create(700, 1100, 'ground').setScale(2).refreshBody();
+    platforms.create(0, 1000, 'ground').setOrigin(0, 0).refreshBody().setScale(20,2).body.setSize(400*20,320*2);
+    
 
     // Розташовуємо другу платформу далі вправо, за межами екрану
-    platforms.create(2200, 1100, 'ground').setScale(2).refreshBody(); // Додано другу платформу
-    platforms.create(700, 800, 'ground1').setScale(2).refreshBody();
-    platforms.create(1000, 600, 'ground1').setScale(2).refreshBody();
-    platforms.create(1500, 800, 'ground1').setScale(2).refreshBody();
-    platforms.create(2000, 650, 'ground1').setScale(2).refreshBody();
-    platforms.create(2600, 550, 'ground1').setScale(2).refreshBody();
+    // platforms.create(2200, 1100, 'ground').setScale(2).refreshBody(); // Додано другу платформу
+    // platforms.create(700, 800, 'ground1').setScale(2).refreshBody();
+    // platforms.create(1000, 600, 'ground1').setScale(2).refreshBody();
+    // platforms.create(1500, 800, 'ground1').setScale(2).refreshBody();
+    // platforms.create(2000, 650, 'ground1').setScale(2).refreshBody();
+    // platforms.create(2600, 550, 'ground1').setScale(2).refreshBody();
+
+    create_platforms(20,1);
+    create_platforms(20,2);
 
     // Додавання зображення house на першу платформу
     this.add.image(100, 900, 'house');
@@ -98,11 +113,12 @@ function create() {
     });
 
     // Налаштування камери
-    this.cameras.main.setBounds(0, 0, WORLD_WIDTH, window.innerHeight);
-    this.physics.world.setBounds(0, 0, WORLD_WIDTH, window.innerHeight);
+    this.cameras.main.setBounds(0, 0, Number.WORLD_WIDTH, 1000);
+    this.physics.world.setBounds(0, 0, Number.WORLD_WIDTH, 1000);
 
     // Слідкування камери за гравцем
     this.cameras.main.startFollow(player);
+
 
     // Створення та розміщення зображення "star" на верхніх платформах
     const arrows = this.physics.add.group({
