@@ -32,6 +32,7 @@ window.addEventListener('resize', function () {
 function preload() {
     this.load.image('sky', 'assets/sky.png'); // Завантаження зображення неба
     this.load.image('ground', 'assets/platform1.png'); // Завантаження зображення платформи
+    this.load.image('ground2', 'assets/platform2.png'); // Завантаження зображення платформи
     this.load.spritesheet('dude', 'assets/girl.png', { frameWidth: 100, frameHeight: 100 }); // Завантаження спрайту гравця
     this.load.image('house', 'assets/house.png'); // Завантаження зображення будинка
     this.load.image('ground1', 'assets/platform.png'); // Завантаження зображення платформи
@@ -52,7 +53,7 @@ function create() {
     // Розташовуємо першу пл8атформу з самого низу екрану
     for (var x=0; x < WORLD_WIDTH; x=x+400){
         console.log(x)
-        platforms.create(x, 1080-32, 'ground1').setOrigin(0,0).refreshBody();
+        platforms.create(x, 1000, 'ground2').setOrigin(0,0).refreshBody();
     }
     //platforms.create(400, 1080-32, 'ground1').setDisplaySize(WORLD_WIDTH, 5000).setScale(2).refreshBody();
 
