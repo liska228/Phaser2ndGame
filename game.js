@@ -31,10 +31,10 @@ window.addEventListener('resize', function () {
 // Завантаження ресурсів
 function preload() {
     this.load.image('sky', 'assets/sky.png'); // Завантаження зображення неба
-    this.load.image('ground', 'assets/platform.png'); // Завантаження зображення платформи
+    this.load.image('ground', 'assets/platform1.png'); // Завантаження зображення платформи
     this.load.spritesheet('dude', 'assets/girl.png', { frameWidth: 100, frameHeight: 100 }); // Завантаження спрайту гравця
     this.load.image('house', 'assets/house.png'); // Завантаження зображення будинка
-    this.load.image('ground1', 'assets/platform1.png'); // Завантаження зображення платформи
+    this.load.image('ground1', 'assets/platform.png'); // Завантаження зображення платформи
     this.load.image('star', 'assets/star.png'); // Завантаження зображення платформи
 }
 // Константа, щоб визначити ширину фону
@@ -43,19 +43,24 @@ const WORLD_WIDTH = 5000; // Змінено ширину світу для ві�
 /// Створення гри
 function create() {
     // Додавання зображення неба і встановлення розміру на весь екран
-    this.add.image(500, 500, 'sky').setDisplaySize(WORLD_WIDTH, 1000);
+   // this.add.image(500, 500, 'sky').setDisplaySize(WORLD_WIDTH, 1000);
+    this.add.tileSprite(0, 0, WORLD_WIDTH, 1080, 'sky').setOrigin(0,0);
 
     // Створення платформ
     platforms = this.physics.add.staticGroup();
 
-    // Розташовуємо першу платформу з самого низу екрану
-    platforms.create(700, 1100, 'ground').setScale(2).refreshBody();
+    // Розташовуємо першу пл8атформу з самого низу екрану
+    for (var x=0; x < WORLD_WIDTH; x=x+400){
+        console.log(x)
+        platforms.create(x, 1080-32, 'ground1').setOrigin(0,0).refreshBody();
+    }
+    //platforms.create(400, 1080-32, 'ground1').setDisplaySize(WORLD_WIDTH, 5000).setScale(2).refreshBody();
 
     // Розташовуємо другу платформу далі вправо, за межами екрану
     platforms.create(2200, 1100, 'ground').setScale(2).refreshBody(); // Додано другу платформу
     platforms.create(700, 800, 'ground1').setScale(2).refreshBody();
-    platforms.create(1000, 600, 'ground1').setScale(2).refreshBody();
-    platforms.create(1500, 800, 'ground1').setScale(2).refreshBody();
+     platforms.create(1000, 600, 'ground1').setScale(2).refreshBody();
+     platforms.create(1500, 800, 'ground1').setScale(2).refreshBody();
     platforms.create(2000, 650, 'ground1').setScale(2).refreshBody();
     platforms.create(2600, 550, 'ground1').setScale(2).refreshBody();
 
