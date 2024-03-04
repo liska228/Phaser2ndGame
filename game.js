@@ -36,7 +36,8 @@ function preload() {
     this.load.spritesheet('dude', 'assets/girl.png', { frameWidth: 100, frameHeight: 100 }); // Завантаження спрайту гравця
     this.load.image('house', 'assets/house.png'); // Завантаження зображення будинка
     this.load.image('ground1', 'assets/platform.png'); // Завантаження зображення платформи
-    this.load.image('star', 'assets/star.png'); // Завантаження зображення платформи
+    this.load.image('star', 'assets/star.png');
+    this.load.image('tree', 'assets/Tree.png'); 
 }
 // Константа, щоб визначити ширину фону
 const WORLD_WIDTH = 5000; // Змінено ширину світу для відображення додаткової платформи
@@ -55,7 +56,11 @@ function create() {
         console.log(x)
         platforms.create(x, 1000, 'ground2').setOrigin(0,0).refreshBody();
     }
-    //platforms.create(400, 1080-32, 'ground1').setDisplaySize(WORLD_WIDTH, 5000).setScale(2).refreshBody();
+    
+//     trees = this.physics.add.staticGroup();
+// for (var x = 900; x < worldWidth; x = x + Phaser.Math.FloatBetween(400, 1500)) {
+//   console.log(' x-' + x)
+//   bushes.create(x, 1080 - 150, 'tree').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody();
 
     // Розташовуємо другу платформу далі вправо, за межами екрану
     platforms.create(2200, 1100, 'ground').setScale(2).refreshBody(); // Додано другу платформу
@@ -67,6 +72,7 @@ function create() {
 
     // Додавання зображення house на першу платформу
     this.add.image(100, 900, 'house');
+
 
     // Створення гравця
     player = this.physics.add.sprite(100, 450, 'dude');
@@ -131,6 +137,8 @@ function collectStar(player, star) {
 
 
 }
+
+
 
 // Оновлення гри
 function update() {
