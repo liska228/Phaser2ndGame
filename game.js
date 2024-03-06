@@ -38,6 +38,8 @@ function preload() {
     this.load.image('ground1', 'assets/platform.png'); // Завантаження зображення платформи
     this.load.image('star', 'assets/star.png');
     this.load.image('tree', 'assets/Tree.png'); 
+    this.load.image('stone', 'assets/Stone.png');
+    this.load.image('bush', 'assets/bush.png');
 }
 // Константа, щоб визначити ширину фону
 const WORLD_WIDTH = 5000; // Змінено ширину світу для відображення додаткової платформи
@@ -53,17 +55,32 @@ function create() {
 
     trees = this.physics.add.staticGroup();
 
+    stones = this.physics.add.staticGroup();
+
+    bushes = this.physics.add.staticGroup();
+
     // Розташовуємо першу пл8атформу з самого низу екрану
     for (var x=0; x < WORLD_WIDTH; x=x+400){
         console.log(x)
         platforms.create(x, 1000, 'ground2').setOrigin(0,0).refreshBody();
     }
     
-    for (var x = 900; x < worldWidth; x = x + Phaser.Math.FloatBetween(400, 1500)) {
+    for (var x = 900; x < WORLD_WIDTH; x = x + Phaser.Math.FloatBetween(400, 1500)) {
       console.log(' x-' + x)
     trees.create(x, 1080 - 150, 'tree').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody();
     }
 
+    for (var x = 900; x < WORLD_WIDTH; x = x + Phaser.Math.FloatBetween(400, 1500)) {
+        console.log(' x-' + x)
+      stones.create(x, 1080 - 150, 'stone').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody();
+      }
+
+      for (var x = 900; x < WORLD_WIDTH; x = x + Phaser.Math.FloatBetween(400, 1500)) {
+        console.log(' x-' + x)
+      bushes.create(x, 1080 - 150, 'bush').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody();
+      }
+
+      
     // Розташовуємо другу платформу далі вправо, за межами екрану
     platforms.create(2200, 1100, 'ground').setScale(2).refreshBody(); // Додано другу платформу
     platforms.create(700, 800, 'ground1').setScale(2).refreshBody();
@@ -102,7 +119,7 @@ function create() {
 
     this.anims.create({
         key: 'right',
-        frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+        frames: this.anims.generateFrameNumbers('dude', { start: 1, end:  6}),
         frameRate: 10,
         repeat: -1
     });
