@@ -51,16 +51,18 @@ function create() {
     // Створення платформ
     platforms = this.physics.add.staticGroup();
 
+    trees = this.physics.add.staticGroup();
+
     // Розташовуємо першу пл8атформу з самого низу екрану
     for (var x=0; x < WORLD_WIDTH; x=x+400){
         console.log(x)
         platforms.create(x, 1000, 'ground2').setOrigin(0,0).refreshBody();
     }
     
-//     trees = this.physics.add.staticGroup();
-// for (var x = 900; x < worldWidth; x = x + Phaser.Math.FloatBetween(400, 1500)) {
-//   console.log(' x-' + x)
-//   bushes.create(x, 1080 - 150, 'tree').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody();
+    for (var x = 900; x < worldWidth; x = x + Phaser.Math.FloatBetween(400, 1500)) {
+      console.log(' x-' + x)
+    trees.create(x, 1080 - 150, 'tree').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody();
+    }
 
     // Розташовуємо другу платформу далі вправо, за межами екрану
     platforms.create(2200, 1100, 'ground').setScale(2).refreshBody(); // Додано другу платформу
