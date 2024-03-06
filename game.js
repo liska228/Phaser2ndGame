@@ -48,7 +48,7 @@ const WORLD_WIDTH = 5000; // Змінено ширину світу для ві�
 function create() {
     // Додавання зображення неба і встановлення розміру на весь екран
    // this.add.image(500, 500, 'sky').setDisplaySize(WORLD_WIDTH, 1000);
-    this.add.tileSprite(0, 0, WORLD_WIDTH, 1080, 'sky').setOrigin(0,0);
+    this.add.tileSprite(0, 0, WORLD_WIDTH, 1080, 'sky').setOrigin(0,0).setDepth(0);
 
     // Створення платформ
     platforms = this.physics.add.staticGroup();
@@ -65,29 +65,29 @@ function create() {
         platforms.create(x, 1000, 'ground2').setOrigin(0,0).refreshBody();
     }
     
-    for (var x = 900; x < WORLD_WIDTH; x = x + Phaser.Math.FloatBetween(400, 1500)) {
+    for (var x = 900; x < WORLD_WIDTH; x = x + Phaser.Math.FloatBetween(100, 1000)) {
       console.log(' x-' + x)
-    trees.create(x, 1080 - 150, 'tree').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody();
+    trees.create(x, 1080 - 100, 'tree').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody().setDepth(Phaser.Math.Between(1,10));
     }
 
-    for (var x = 900; x < WORLD_WIDTH; x = x + Phaser.Math.FloatBetween(400, 1500)) {
+    for (var x = 900; x < WORLD_WIDTH; x = x + Phaser.Math.FloatBetween(100, 1000)) {
         console.log(' x-' + x)
-      stones.create(x, 1080 - 150, 'stone').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody();
+      stones.create(x, 1080 - 100, 'stone').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody().setDepth(Phaser.Math.Between(1,10));
       }
 
-      for (var x = 900; x < WORLD_WIDTH; x = x + Phaser.Math.FloatBetween(400, 1500)) {
+      for (var x = 900; x < WORLD_WIDTH; x = x + Phaser.Math.FloatBetween(100, 1000)) {
         console.log(' x-' + x)
-      bushes.create(x, 1080 - 150, 'bush').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody();
+      bushes.create(x, 1080 - 100, 'bush').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody().setDepth(Phaser.Math.Between(1,10));
       }
 
       
     // Розташовуємо другу платформу далі вправо, за межами екрану
-    platforms.create(2200, 1100, 'ground').setScale(2).refreshBody(); // Додано другу платформу
-    platforms.create(700, 800, 'ground1').setScale(2).refreshBody();
-     platforms.create(1000, 600, 'ground1').setScale(2).refreshBody();
-     platforms.create(1500, 800, 'ground1').setScale(2).refreshBody();
-    platforms.create(2000, 650, 'ground1').setScale(2).refreshBody();
-    platforms.create(2600, 550, 'ground1').setScale(2).refreshBody();
+    // platforms.create(2200, 1100, 'ground').setScale(2).refreshBody(); // Додано другу платформу
+    // platforms.create(700, 800, 'ground1').setScale(2).refreshBody();
+    // platforms.create(1000, 600, 'ground1').setScale(2).refreshBody();
+    // platforms.create(1500, 800, 'ground1').setScale(2).refreshBody();
+    // platforms.create(2000, 650, 'ground1').setScale(2).refreshBody();
+    // platforms.create(2600, 550, 'ground1').setScale(2).refreshBody();
 
     // Додавання зображення house на першу платформу
     this.add.image(100, 900, 'house');
@@ -97,6 +97,7 @@ function create() {
     player = this.physics.add.sprite(100, 450, 'dude');
     player.setBounce(0.2);
     player.setCollideWorldBounds(false); // Вимкнення обмежень за межами світу гри
+    player.setDepth(5)
 
     // Колізія гравця з платформами
     this.physics.add.collider(player, platforms);
