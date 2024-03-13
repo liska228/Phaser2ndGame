@@ -21,11 +21,11 @@ var game = new Phaser.Game(config);
 var score = 0; // Початковий рахунок гравця
 var scoreText; // Текст рахунку
 var canMove = true; // Змінна, що визначає, чи може гравець рухатися
-
+var Life = 5
 
 // Функція для оновлення розмірів гри при зміні розмірів вікна браузера
 window.addEventListener('resize', function () {
-    game.scale.resize(window.innerWidth, window.innerHeight);
+     game.scale.resize(window.innerWidth, window.innerHeight);
 });
 
 // Завантаження ресурсів
@@ -40,6 +40,9 @@ function preload() {
     this.load.image('tree', 'assets/Tree.png'); 
     this.load.image('stone', 'assets/Stone.png');
     this.load.image('bush', 'assets/bush.png');
+    this.load.image('platformStart', 'assets/platformStart.png');
+    this.load.image('platformOne', 'assets/platformOne.png');
+    this.load.image('platformFinish', 'assets/platformFinish.png');
 }
 // Константа, щоб визначити ширину фону
 const WORLD_WIDTH = 5000; // Змінено ширину світу для відображення додаткової платформи
@@ -47,7 +50,6 @@ const WORLD_WIDTH = 5000; // Змінено ширину світу для ві�
 /// Створення гри
 function create() {
     // Додавання зображення неба і встановлення розміру на весь екран
-   // this.add.image(500, 500, 'sky').setDisplaySize(WORLD_WIDTH, 1000);
     this.add.tileSprite(0, 0, WORLD_WIDTH, 1080, 'sky').setOrigin(0,0).setDepth(0);
 
     // Створення платформ
@@ -59,38 +61,41 @@ function create() {
 
     bushes = this.physics.add.staticGroup();
 
-    // Розташовуємо першу пл8атформу з самого низу екрану
-    for (var x=0; x < WORLD_WIDTH; x=x+400){
+    // Розташовуємо першу платформу з самого низу екрану
+    for (var x=0; x < WORLD_WIDTH; x=x+128){
         console.log(x)
-        platforms.create(x, 1000, 'ground2').setOrigin(0,0).refreshBody();
+        platforms.create(x, 1080-128, 'ground2').setOrigin(0,0).refreshBody();
     }
-    
+    for (var x = 0; x < WORLD_WIDTH; x = x + Phaser.Math.Between(600, 700)) { 
+        var y = Phaser.Math.FloatBetween(700, 93 * 9) 
+        platforms.create(x, y, 'platformStart').setDepth(5);
+        var i;
+    for (i = 1; i < Phaser.Math.Between(0, 5); i++) { 
+        platforms.create(x + 100 * i, y, 'platformOne').setDepth(5)}
+
+         platforms.create(x + 100 * i, y, 'platformFinish').setDepth(5);
+     }
+
+
     for (var x = 900; x < WORLD_WIDTH; x = x + Phaser.Math.FloatBetween(100, 1000)) {
       console.log(' x-' + x)
-    trees.create(x, 1080 - 100, 'tree').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody().setDepth(Phaser.Math.Between(1,10));
+    trees.create(x, 1080 - 128, 'tree').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody().setDepth(Phaser.Math.Between(1,10));
     }
 
     for (var x = 900; x < WORLD_WIDTH; x = x + Phaser.Math.FloatBetween(100, 1000)) {
         console.log(' x-' + x)
-      stones.create(x, 1080 - 100, 'stone').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody().setDepth(Phaser.Math.Between(1,10));
+      stones.create(x, 1080 - 128, 'stone').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody().setDepth(Phaser.Math.Between(1,10));
       }
 
       for (var x = 900; x < WORLD_WIDTH; x = x + Phaser.Math.FloatBetween(100, 1000)) {
         console.log(' x-' + x)
-      bushes.create(x, 1080 - 100, 'bush').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody().setDepth(Phaser.Math.Between(1,10));
+      bushes.create(x, 1080 - 128, 'bush').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody().setDepth(Phaser.Math.Between(1,10));
       }
 
       
-    // Розташовуємо другу платформу далі вправо, за межами екрану
-    // platforms.create(2200, 1100, 'ground').setScale(2).refreshBody(); // Додано другу платформу
-    // platforms.create(700, 800, 'ground1').setScale(2).refreshBody();
-    // platforms.create(1000, 600, 'ground1').setScale(2).refreshBody();
-    // platforms.create(1500, 800, 'ground1').setScale(2).refreshBody();
-    // platforms.create(2000, 650, 'ground1').setScale(2).refreshBody();
-    // platforms.create(2600, 550, 'ground1').setScale(2).refreshBody();
 
     // Додавання зображення house на першу платформу
-    this.add.image(100, 900, 'house');
+    this.add.image(100, 900, 'house').setDepth(20);
 
 
     // Створення гравця
@@ -134,7 +139,7 @@ function create() {
     // Створення та розміщення зображення "star" на верхніх платформах
     const stars = this.physics.add.group({
         key: 'star',
-        repeat: 40, // Кількість зірок (змініть за потребою)
+        repeat: 100, // Кількість зірок (змініть за потребою)
         setXY: { x: 250, y: 50, stepX: 70 } // Відстань між зірками (змініть за потребою)
     });
 
@@ -146,7 +151,15 @@ function create() {
     // Колізія зірок з платформами
     this.physics.add.collider(stars, platforms);
     this.physics.add.overlap(player, stars, collectStar, null, this);
-    scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' });
+    //Додавання тексту
+    scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' })
+    .setOrigin(0,0) 
+    .setScrollFactor(0);
+    //Додавання життя
+    lifeText=this.add.text(1500, 100, showLife(), {fontSize: '40px', fill:'#FFF'})
+    .setOrigin(0,0) 
+    .setScrollFactor(0);
+
 }
 
 // Функція для обробки колізії зірок та гравця
@@ -155,9 +168,16 @@ function collectStar(player, star) {
     score += 10;
     scoreText.setText('Score: ' + score);
 
-
 }
 
+//Функція смуги життя
+function showLife() {
+    var lifeLine=''
+
+    for(var i=0; i< Life; i++){
+        lifeLine = lifeLine + '💖' }
+    return lifeLine
+}
 
 
 // Оновлення гри
