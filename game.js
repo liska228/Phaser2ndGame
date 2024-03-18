@@ -147,13 +147,14 @@ function create() {
         setXY: { x: 250, y: 50, stepX: 70 } // Відстань між зірками (змініть за потребою)
     });
 
+    
     // Налаштування властивостей зірок
     stars.children.iterate(function (child) {
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
     });
     //Додала бомби
     bombs = this.physics.add.group();
-    scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+    // scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
 
     //Колізія бомб 
     this.physics.add.collider(bombs, platforms);
