@@ -19,9 +19,12 @@ var config = {
 // Ініціалізація гри
 var game = new Phaser.Game(config);
 var score = 0; // Початковий рахунок гравця
-var scoreText; // Текст рахунку
+var scoreText;
+var lifeText; // Текст рахунку
 var canMove = true; // Змінна, що визначає, чи може гравець рухатися
-var Life = 5
+var Life = 5;
+var bomb;
+var LifeText;
 
 // Функція для оновлення розмірів гри при зміні розмірів вікна браузера
 window.addEventListener('resize', function () {
@@ -43,6 +46,7 @@ function preload() {
     this.load.image('platformStart', 'assets/platformStart.png');
     this.load.image('platformOne', 'assets/platformOne.png');
     this.load.image('platformFinish', 'assets/platformFinish.png');
+    this.load.image('bomb', 'assets/bomb.png');
 }
 // Константа, щоб визначити ширину фону
 const WORLD_WIDTH = 5000; // Змінено ширину світу для відображення додаткової платформи
@@ -147,6 +151,13 @@ function create() {
     stars.children.iterate(function (child) {
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
     });
+    //Додала бомби
+    bombs = this.physics.add.group();
+    scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+
+    //Колізія бомб 
+    this.physics.add.collider(bombs, platforms);
+    this.physics.add.collider(player, bombs, hitBomb, null, this);
 
     // Колізія зірок з платформами
     this.physics.add.collider(stars, platforms);
@@ -159,7 +170,6 @@ function create() {
     lifeText=this.add.text(1500, 100, showLife(), {fontSize: '40px', fill:'#FFF'})
     .setOrigin(0,0) 
     .setScrollFactor(0);
-
 }
 
 // Функція для обробки колізії зірок та гравця
@@ -168,15 +178,25 @@ function collectStar(player, star) {
     score += 10;
     scoreText.setText('Score: ' + score);
 
+    var x = (player.x < 5000) ? Phaser.Math.Between(400, 5000) : Phaser.Math.Between(0, 5000);
+    
+    var bomb = bombs.create(x, 16, 'bomb');
+    bomb.setBounce(1);
+    bomb.setCollideWorldBounds(true);
+    bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+    bomb.allowGravity = false;
+    
+
 }
 
 //Функція смуги життя
 function showLife() {
-    var lifeLine=''
+    var lifeLine='  '
 
     for(var i=0; i< Life; i++){
-        lifeLine = lifeLine + '💖' }
-    return lifeLine
+        lifeLine = lifeLine += '💖';
+    }
+    return lifeLine;
 }
 
 
@@ -205,4 +225,53 @@ function update() {
         }
     }
 
+ }
+
+ function createBomb(star) {
+   // Створення бомби під час збору зірки
+   var bomb = this.physics.add.image(star.x, star.y - 900, 'bomb').setGravityY(300); // Змінені координати для з'явлення бомби зверху
+   this.physics.add.collider(bomb, platforms, function(bomb, platform) {
+       bomb.setVelocityY(-600); // Задайте вектор швидкості у протилежному напрямку від вертикальної швидкості платформи
+   });
+   // Задання горизонтальної швидкості бомби
+   var direction = Phaser.Math.Between(0, 1) ? 1: -1; // Випадково вибираємо напрямок (-1 або 1)
+   var horizontalSpeed = Phaser.Math.Between(100, 200) * direction; // Горизонтальна швидкість
+   bomb.setVelocityX(horizontalSpeed);
+ 
+   // Зміна напрямку бомб, якщо вона зіштовхується з верхніми платформами
+   this.physics.add.collider(bomb, platforms, function(bomb, platform) {
+       bomb.setVelocityX(-bomb.body.velocity.x); // Змінюємо напрямок бомби, віднімаючи її поточну горизонтальну швидкість
+   });
+   bomb.setCollideWorldBounds(true);
+   bomb.setBounce(1);
+   this.physics.add.collider(player, bomb, function() { hitBomb(player, bomb); }); // Додайте колізію гравця з бомбою та обробник
+ }
+ // Функція обробки зіткнення гравця з бомбою
+//функція торкання бомб з  гравцем
+function hitBomb(player, bomb) {
+    // this.physics.pause();
+    bomb.disableBody(true, true);
+
+    // player.setTint(0xff0000); // замалювати гравця червоним кольором 
+    Life -= 1;
+    lifeText.setText(showLife());
+
+    console.log('boom')
+    player.anims.play('turn');
+
+    if (Life == 0){
+        gameOver();
+    }
+}
+
+ function refreshBody(){
+   console.log('game over')
+   this.scene.restart();
+ };
+ 
+ 
+ function gameOver() {
+   console.log('Гра закінчилася!');
+   player.setTint(0xff0000);
+   this.physics.pause();
  }
