@@ -25,11 +25,12 @@ var canMove = true; // Змінна, що визначає, чи може гра
 var Life = 5;
 var bomb;
 var LifeText;
+var restartButton;
 
 // Функція для оновлення розмірів гри при зміні розмірів вікна браузера
-window.addEventListener('resize', function () {
-     game.scale.resize(window.innerWidth, window.innerHeight);
-});
+// window.addEventListener('resize', function () {
+//      game.scale.resize(window.innerWidth, window.innerHeight);
+// });
 
 // Завантаження ресурсів
 function preload() {
@@ -40,7 +41,7 @@ function preload() {
     this.load.image('house', 'assets/house.png'); // Завантаження зображення будинка
     this.load.image('ground1', 'assets/platform.png'); // Завантаження зображення платформи
     this.load.image('star', 'assets/star.png');
-    this.load.image('tree', 'assets/Tree.png'); 
+    this.load.image('tree', 'assets/Tree.png');
     this.load.image('stone', 'assets/Stone.png');
     this.load.image('bush', 'assets/bush.png');
     this.load.image('platformStart', 'assets/platformStart.png');
@@ -52,6 +53,8 @@ function preload() {
     this.load.image('player4', 'assets/frog.png');
     this.load.image('player5', 'assets/frog.png');
     this.load.image('player6', 'assets/frog.png');
+    this.load.image('restartButton', 'assets/restart.png');
+    this.load.image('box', 'assets/Crate.png');
 }
 // Константа, щоб визначити ширину фону
 const WORLD_WIDTH = 5000; // Змінено ширину світу для відображення додаткової платформи
@@ -59,7 +62,7 @@ const WORLD_WIDTH = 5000; // Змінено ширину світу для ві�
 /// Створення гри
 function create() {
     // Додавання зображення неба і встановлення розміру на весь екран
-    this.add.tileSprite(0, 0, WORLD_WIDTH, 1080, 'sky').setOrigin(0,0).setDepth(0);
+    this.add.tileSprite(0, 0, WORLD_WIDTH, 1080, 'sky').setOrigin(0, 0).setDepth(0);
 
     // Створення платформ
     platforms = this.physics.add.staticGroup();
@@ -70,41 +73,57 @@ function create() {
 
     bushes = this.physics.add.staticGroup();
 
+    boxes = this.physics.add.staticGroup();
+
+
     // Розташовуємо першу платформу з самого низу екрану
-    for (var x=0; x < WORLD_WIDTH; x=x+128){
+    for (var x = 0; x < WORLD_WIDTH; x = x + 128) {
         console.log(x)
-        platforms.create(x, 1080-128, 'ground2').setOrigin(0,0).refreshBody();
+        platforms.create(x, 1080 - 128, 'ground2').setOrigin(0, 0).refreshBody();
     }
-    for (var x = 0; x < WORLD_WIDTH; x = x + Phaser.Math.Between(600, 700)) { 
-        var y = Phaser.Math.FloatBetween(700, 93 * 9) 
+    for (var x = 0; x < WORLD_WIDTH; x = x + Phaser.Math.Between(600, 700)) {
+        var y = Phaser.Math.FloatBetween(700, 93 * 9)
         platforms.create(x, y, 'platformStart').setDepth(5);
         var i;
-    for (i = 1; i < Phaser.Math.Between(0, 5); i++) { 
-        platforms.create(x + 100 * i, y, 'platformOne').setDepth(5)}
+        for (i = 1; i < Phaser.Math.Between(0, 5); i++) {
+            platforms.create(x + 100 * i, y, 'platformOne').setDepth(5)
+        }
 
-         platforms.create(x + 100 * i, y, 'platformFinish').setDepth(5);
-     }
+        platforms.create(x + 100 * i, y, 'platformFinish').setDepth(5);
+    }
 
 
     for (var x = 900; x < WORLD_WIDTH; x = x + Phaser.Math.FloatBetween(100, 1000)) {
-      console.log(' x-' + x)
-    trees.create(x, 1080 - 128, 'tree').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody().setDepth(Phaser.Math.Between(1,10));
+        console.log(' x-' + x)
+        trees.create(x, 1080 - 128, 'tree').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody().setDepth(Phaser.Math.Between(1, 10));
     }
 
     for (var x = 900; x < WORLD_WIDTH; x = x + Phaser.Math.FloatBetween(100, 1000)) {
         console.log(' x-' + x)
-      stones.create(x, 1080 - 128, 'stone').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody().setDepth(Phaser.Math.Between(1,10));
-      }
+        stones.create(x, 1080 - 128, 'stone').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody().setDepth(Phaser.Math.Between(1, 10));
+    }
 
-      for (var x = 900; x < WORLD_WIDTH; x = x + Phaser.Math.FloatBetween(100, 1000)) {
+    for (var x = 900; x < WORLD_WIDTH; x = x + Phaser.Math.FloatBetween(100, 1000)) {
         console.log(' x-' + x)
-      bushes.create(x, 1080 - 128, 'bush').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody().setDepth(Phaser.Math.Between(1,10));
-      }
+        bushes.create(x, 1080 - 128, 'bush').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody().setDepth(Phaser.Math.Between(1, 10));
+    }
 
-      
+    for (var x = 900; x < WORLD_WIDTH; x = x + Phaser.Math.FloatBetween(100, 1000)) {
+        console.log(' x-' + x)
+        boxes.create(x, 1080 - 128, 'box').setOrigin(0, 1).setScale(Phaser.Math.FloatBetween(0.5, 1.5)).refreshBody().setDepth(Phaser.Math.Between(1, 10));
+    }
+
+
+
 
     // Додавання зображення house на першу платформу
     this.add.image(100, 900, 'house').setDepth(20);
+
+    var restartButton = this.add.sprite(250, 40, 'restartButton').setInteractive();
+
+    restartButton.on('pointerup', function () {
+        restartGame();
+    });
 
 
     // Створення гравця
@@ -129,31 +148,73 @@ function create() {
         // Зміна напрямку руху
         direction *= -1; // Змінюємо напрямок (з вліво на вправо або навпаки)
         player2.setVelocityX(180 * direction); // Встановлюємо нову швидкість залежно від напрямку
-      }, Phaser.Math.Between(1000, 35000));
-
-  this.physics.add.collider(player2, player);
-  cursors = this.input.keyboard.createCursorKeys();
-
-  player3 = this.physics.add.sprite(2003, 2332, 'player3').setDepth(5).setScale(2);
-  player3.setVelocityY(230);
-  player3.setVelocityX(180);
-  var direction = -1; // Починаємо з руху вліво
-  player3.setVelocityX(180 * direction); // Встановлення початкової швидкості
-  var direction = Phaser.Math.Between(0, 1) ? 1 : -1; // 1 - рух вправо, -1 - рух вліво
-  player3.setVelocityX(180 * direction); // 
-  // Колізія гравця з платформами
-  this.physics.add.collider(player, platforms);
-  cursors = this.input.keyboard.createCursorKeys();
-  player3.setCollideWorldBounds(true);
-  player3.setBounce(1);
-  setInterval(function () {
-      // Зміна напрямку руху
-      direction *= -1; // Змінюємо напрямок (з вліво на вправо або навпаки)
-      player2.setVelocityX(180 * direction); // Встановлюємо нову швидкість залежно від напрямку
     }, Phaser.Math.Between(1000, 35000));
 
-this.physics.add.collider(player3, player);
-cursors = this.input.keyboard.createCursorKeys();
+    this.physics.add.collider(player2, player);
+    cursors = this.input.keyboard.createCursorKeys();
+
+    player4 = this.physics.add.sprite(810, 400, 'player2').setDepth(5).setScale(2);
+    player4.setVelocityY(230);
+    player4.setVelocityX(180);
+    var direction = -1; // Починаємо з руху вліво
+    player2.setVelocityX(180 * direction); // Встановлення початкової швидкості
+    var direction = Phaser.Math.Between(0, 1) ? 1 : -1; // 1 - рух вправо, -1 - рух вліво
+    player2.setVelocityX(180 * direction); // 
+    // Колізія гравця з платформами
+    this.physics.add.collider(player4, platforms);
+    cursors = this.input.keyboard.createCursorKeys();
+    player4.setCollideWorldBounds(true);
+    player4.setBounce(1);
+    setInterval(function () {
+        // Зміна напрямку руху
+        direction *= -1; // Змінюємо напрямок (з вліво на вправо або навпаки)
+        player4.setVelocityX(180 * direction); // Встановлюємо нову швидкість залежно від напрямку
+    }, Phaser.Math.Between(1000, 35000));
+
+    this.physics.add.collider(player4, player);
+    cursors = this.input.keyboard.createCursorKeys();
+
+    player5 = this.physics.add.sprite(810, 400, 'player2').setDepth(5).setScale(2);
+    player5.setVelocityY(230);
+    player5.setVelocityX(180);
+    var direction = -1; // Починаємо з руху вліво
+    player5.setVelocityX(180 * direction); // Встановлення початкової швидкості
+    var direction = Phaser.Math.Between(0, 1) ? 1 : -1; // 1 - рух вправо, -1 - рух вліво
+    player5.setVelocityX(180 * direction); // 
+    // Колізія гравця з платформами
+    this.physics.add.collider(player5, platforms);
+    cursors = this.input.keyboard.createCursorKeys();
+    player5.setCollideWorldBounds(true);
+    player5.setBounce(1);
+    setInterval(function () {
+        // Зміна напрямку руху
+        direction *= -1; // Змінюємо напрямок (з вліво на вправо або навпаки)
+        player5.setVelocityX(180 * direction); // Встановлюємо нову швидкість залежно від напрямку
+    }, Phaser.Math.Between(1000, 35000));
+
+    this.physics.add.collider(player5, player);
+    cursors = this.input.keyboard.createCursorKeys();
+
+    player3 = this.physics.add.sprite(2003, 2332, 'player3').setDepth(5).setScale(2);
+    player3.setVelocityY(230);
+    player3.setVelocityX(180);
+    var direction = -1; // Починаємо з руху вліво
+    player3.setVelocityX(180 * direction); // Встановлення початкової швидкості
+    var direction = Phaser.Math.Between(0, 1) ? 1 : -1; // 1 - рух вправо, -1 - рух вліво
+    player3.setVelocityX(180 * direction); // 
+    // Колізія гравця з платформами
+    this.physics.add.collider(player3, platforms);
+    cursors = this.input.keyboard.createCursorKeys();
+    player3.setCollideWorldBounds(true);
+    player3.setBounce(1);
+    setInterval(function () {
+        // Зміна напрямку руху
+        direction *= -1; // Змінюємо напрямок (з вліво на вправо або навпаки)
+        player2.setVelocityX(180 * direction); // Встановлюємо нову швидкість залежно від напрямку
+    }, Phaser.Math.Between(1000, 35000));
+
+    this.physics.add.collider(player3, player);
+    cursors = this.input.keyboard.createCursorKeys();
 
     // Налаштування анімацій гравця
     this.anims.create({
@@ -171,17 +232,18 @@ cursors = this.input.keyboard.createCursorKeys();
 
     this.anims.create({
         key: 'right',
-        frames: this.anims.generateFrameNumbers('dude', { start: 1, end:  6}),
+        frames: this.anims.generateFrameNumbers('dude', { start: 1, end: 6 }),
         frameRate: 10,
         repeat: -1
     });
 
     // Налаштування камери
-    this.cameras.main.setBounds(0, 0, WORLD_WIDTH, window.innerHeight);
-    this.physics.world.setBounds(0, 0, WORLD_WIDTH, window.innerHeight);
+    this.cameras.main.setBounds(0, 0, WORLD_WIDTH, config.height);
+    this.physics.world.setBounds(0, 0, WORLD_WIDTH, config.height);
 
     // Слідкування камери за гравцем
     this.cameras.main.startFollow(player);
+
     // Створення та розміщення зображення "star" на верхніх платформах
     const stars = this.physics.add.group({
         key: 'star',
@@ -189,7 +251,7 @@ cursors = this.input.keyboard.createCursorKeys();
         setXY: { x: 250, y: 50, stepX: 70 } // Відстань між зірками (змініть за потребою)
     });
 
-    
+
     // Налаштування властивостей зірок
     stars.children.iterate(function (child) {
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
@@ -207,12 +269,12 @@ cursors = this.input.keyboard.createCursorKeys();
     this.physics.add.overlap(player, stars, collectStar, null, this);
     //Додавання тексту
     scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' })
-    .setOrigin(0,0) 
-    .setScrollFactor(0);
+        .setOrigin(0, 0)
+        .setScrollFactor(0);
     //Додавання життя
-    lifeText=this.add.text(1500, 100, showLife(), {fontSize: '40px', fill:'#FFF'})
-    .setOrigin(0,0) 
-    .setScrollFactor(0);
+    lifeText = this.add.text(1500, 100, showLife(), { fontSize: '40px', fill: '#FFF' })
+        .setOrigin(0, 0)
+        .setScrollFactor(0);
 }
 
 // Функція для обробки колізії зірок та гравця
@@ -222,21 +284,21 @@ function collectStar(player, star) {
     scoreText.setText('Score: ' + score);
 
     var x = (player.x < 5000) ? Phaser.Math.Between(400, 5000) : Phaser.Math.Between(0, 5000);
-    
+
     var bomb = bombs.create(x, 16, 'bomb');
     bomb.setBounce(1);
     bomb.setCollideWorldBounds(true);
     bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
     bomb.allowGravity = false;
-    
+
 
 }
 
 //Функція смуги життя
 function showLife() {
-    var lifeLine='  '
+    var lifeLine = '  '
 
-    for(var i=0; i< Life; i++){
+    for (var i = 0; i < Life; i++) {
         lifeLine = lifeLine += '💖';
     }
     return lifeLine;
@@ -268,52 +330,60 @@ function update() {
         }
     }
 
- }
+}
 
- function createBomb(star) {
-   // Створення бомби під час збору зірки
-   var bomb = this.physics.add.image(star.x, star.y - 900, 'bomb').setGravityY(300); // Змінені координати для з'явлення бомби зверху
-   this.physics.add.collider(bomb, platforms, function(bomb, platform) {
-       bomb.setVelocityY(-600); // Задайте вектор швидкості у протилежному напрямку від вертикальної швидкості платформи
-   });
-   // Задання горизонтальної швидкості бомби
-   var direction = Phaser.Math.Between(0, 1) ? 1: -1; // Випадково вибираємо напрямок (-1 або 1)
-   var horizontalSpeed = Phaser.Math.Between(100, 200) * direction; // Горизонтальна швидкість
-   bomb.setVelocityX(horizontalSpeed);
- 
-   // Зміна напрямку бомб, якщо вона зіштовхується з верхніми платформами
-   this.physics.add.collider(bomb, platforms, function(bomb, platform) {
-       bomb.setVelocityX(-bomb.body.velocity.x); // Змінюємо напрямок бомби, віднімаючи її поточну горизонтальну швидкість
-   });
-   bomb.setCollideWorldBounds(true);
-   bomb.setBounce(1);
-   this.physics.add.collider(player, bomb, function() { hitBomb(player, bomb); }); // Додайте колізію гравця з бомбою та обробник
- }
+function createBomb(star) {
+    // Створення бомби під час збору зірки
+    var bomb = this.physics.add.image(star.x, star.y - 900, 'bomb').setGravityY(300); // Змінені координати для з'явлення бомби зверху
+    this.physics.add.collider(bomb, platforms, function (bomb, platform) {
+        bomb.setVelocityY(-600); // Задайте вектор швидкості у протилежному напрямку від вертикальної швидкості платформи
+    });
+    // Задання горизонтальної швидкості бомби
+    var direction = Phaser.Math.Between(0, 1) ? 1 : -1; // Випадково вибираємо напрямок (-1 або 1)
+    var horizontalSpeed = Phaser.Math.Between(100, 200) * direction; // Горизонтальна швидкість
+    bomb.setVelocityX(horizontalSpeed);
+
+    // Зміна напрямку бомб, якщо вона зіштовхується з верхніми платформами
+    this.physics.add.collider(bomb, platforms, function (bomb, platform) {
+        bomb.setVelocityX(-bomb.body.velocity.x); // Змінюємо напрямок бомби, віднімаючи її поточну горизонтальну швидкість
+    });
+    bomb.setCollideWorldBounds(true);
+    bomb.setBounce(1);
+    this.physics.add.collider(player, bomb, function () { hitBomb(player, bomb); }); // Додайте колізію гравця з бомбою та обробник
+}
+
+
 //функція торкання бомб з  гравцем
 function hitBomb(player, bomb) {
     // this.physics.pause();
     bomb.disableBody(true, true);
 
-    
+
     Life -= 1;
     lifeText.setText(showLife());
 
     console.log('boom')
     player.anims.play('turn');
 
-    if (Life == 0){
+    if (Life == 0) {
         gameOver();
     }
 }
 
- function refreshBody(){
-   console.log('game over')
-   this.scene.restart();
- };
- 
- 
- function gameOver() {
+function refreshBody() {
+    console.log('game over')
+    this.scene.restart();
+};
+
+
+
+function gameOver() {
     player.setTint(0xff0000); // замалювати гравця червоним кольором 
-    this.physics.pause();
-   console.log('Гра закінчилася!');
- }
+    console.log('Гра закінчилася!');
+}
+function restartGame() {
+    console.log('---')
+    location.reload()
+    game.scene.stop();
+    game.scene.start(game.scene.key);
+}
