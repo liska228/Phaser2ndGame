@@ -116,6 +116,7 @@ function create() {
 
 
 
+
     // Додавання зображення house на першу платформу
     this.add.image(100, 900, 'house').setDepth(20);
 
@@ -215,6 +216,8 @@ function create() {
 
     this.physics.add.collider(player3, player);
     cursors = this.input.keyboard.createCursorKeys();
+
+    this.physics.add.collider(player, boxes);
 
     // Налаштування анімацій гравця
     this.anims.create({
@@ -380,6 +383,8 @@ function refreshBody() {
 function gameOver() {
     player.setTint(0xff0000); // замалювати гравця червоним кольором 
     console.log('Гра закінчилася!');
+    this.scene.stop();
+
 }
 function restartGame() {
     console.log('---')
